@@ -8,32 +8,32 @@ MPValidate.install = function (Vue, options = {}) {
 
 	let elements = [];
 
-	let errorDiv = options.errorDiv || 'm-form_error';
-	let errorClass = options.errorClass || 'is-error';
-	let successClass = options.successClass || 'is-success';
-	let inputParentClass = options.inputParentClass || '.m-form_item';
-	let attrInputName = options.attrInputName || 'placeholder'
+	const errorDiv = options.errorDiv || 'm-form_error';
+	const errorClass = options.errorClass || 'is-error';
+	const successClass = options.successClass || 'is-success';
+	const inputParentClass = options.inputParentClass || '.m-form_item';
+	const attrInputName = options.attrInputName || 'placeholder'
 
-	let parent = (el, selector) => {
+	const parent = (el, selector) => {
 		while ((el = el.parentElement) && !el.matches(selector));
 		return el;
 	};
 
-	let createErrorEl = (parent) => {
-		let element = document.createElement("span");
+	const createErrorEl = (parent) => {
+		const element = document.createElement("span");
 		element.className = errorDiv;
 		return parent.appendChild(element);
 	}
 
-	let validateField = (el, filters) => {
+	const validateField = (el, filters) => {
 
-		let item = parent(el, inputParentClass);
-		let errorEl = item.querySelector(`.${errorDiv}`) || createErrorEl(item);
+		const item = parent(el, inputParentClass);
+		const errorEl = item.querySelector(`.${errorDiv}`) || createErrorEl(item);
 
-		for(let [key, param] of Object.entries(filters)) {
+		for(const [key, param] of Object.entries(filters)) {
 			if(validators[key] && validators[key](el.value, param) == false) {
 
-				let msg = (validatorsError[key] || validatorsError['default'])
+				const msg = (validatorsError[key] || validatorsError['default'])
 							.replace(/%name%/g, el.getAttribute(attrInputName))
 							.replace(/%param%/g, param);
 
@@ -56,14 +56,14 @@ MPValidate.install = function (Vue, options = {}) {
 
 		let canSubmit = true;
 
-		for (let field of elements) {
+		for (const field of elements) {
 			if(parent(field.elm, formId) !== null) {
 
-				let binding = field.data.directives.filter((value) => {
+				const binding = field.data.directives.filter((value) => {
 					return value.name === 'validate';
 				})[0];
 
-				let filters = Object.assign({}, binding.modifiers, binding.value);
+				const filters = Object.assign({}, binding.modifiers, binding.value);
 
 				if(!validateField(field.elm, filters))
 					canSubmit =	 false;
@@ -78,7 +78,7 @@ MPValidate.install = function (Vue, options = {}) {
 		inserted: function(el, binding, vnode) {
 
 			elements.push(vnode);
-			let filters = Object.assign({}, binding.modifiers, binding.value);
+			const filters = Object.assign({}, binding.modifiers, binding.value);
 
 			el.addEventListener('blur', () => validateField(el, filters));
 		}
