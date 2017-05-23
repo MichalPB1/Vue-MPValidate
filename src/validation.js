@@ -1,5 +1,4 @@
 const MPValidate = {};
-export default MPValidate;
 
 MPValidate.install = (Vue, options = {}) => {
 
@@ -53,25 +52,24 @@ MPValidate.install = (Vue, options = {}) => {
 	}
 
 	Vue.prototype.$validate = (formId) => {
+		return new Promise((resolve, reject) => {
+			for (const field of elements) {
+				if(parent(field.elm, formId) !== null) {
 
-		let canSubmit = true;
+					const binding = field.data.directives.filter((value) => {
+						return value.name === 'validate';
+					})[0];
 
-		for (const field of elements) {
-			if(parent(field.elm, formId) !== null) {
+					const filters = Object.assign({}, binding.modifiers, binding.value);
 
-				const binding = field.data.directives.filter((value) => {
-					return value.name === 'validate';
-				})[0];
+					if(!validateField(field.elm, filters)) {
+						reject();
+					}
 
-				const filters = Object.assign({}, binding.modifiers, binding.value);
-
-				if(!validateField(field.elm, filters))
-					canSubmit =	 false;
-
+				}
 			}
-		}
-
-		return canSubmit;
+			resolve();
+		});
 	}
 
 	Vue.directive('validate', {
@@ -107,3 +105,5 @@ let validatorsError = {
 	minlength: 'Minimalna liczba znaków dla pola %name% to %param%',
 	maxlength: 'Dozwolona liczba znaków dla pola %name% to %param%'
 }
+
+export default MPValidate;
