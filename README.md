@@ -90,6 +90,7 @@ methods: {
 ### Errors message
 
 In error message we can use two placeholder
+
 | Placeholder | Description |
 | ------ | ------ |
 | %name% | name of validate field |
