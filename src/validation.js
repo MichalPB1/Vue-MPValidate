@@ -1,7 +1,7 @@
 const MPValidate = {};
 export default MPValidate;
 
-MPValidate.install = function (Vue, options = {}) {
+MPValidate.install = (Vue, options = {}) => {
 
 	Object.assign(validators, options.validators);
 	Object.assign(validatorsError, options.validatorsError);
@@ -52,7 +52,7 @@ MPValidate.install = function (Vue, options = {}) {
 		return true;
 	}
 
-	Vue.prototype.$validate = function (formId) {
+	Vue.prototype.$validate = (formId) => {
 
 		let canSubmit = true;
 
@@ -75,7 +75,7 @@ MPValidate.install = function (Vue, options = {}) {
 	}
 
 	Vue.directive('validate', {
-		inserted: function(el, binding, vnode) {
+		inserted: (el, binding, vnode) => {
 
 			elements.push(vnode);
 			const filters = Object.assign({}, binding.modifiers, binding.value);
@@ -87,24 +87,14 @@ MPValidate.install = function (Vue, options = {}) {
 };
 
 let validators = {
-	required: function(value) {
-		return Boolean(value.trim().length);
-	},
-	string: function(value) {
-		return /^[A-Za-z ]+$/.test(value);
-	},
-	number: function(value) {
-		return /^\d+$/.test(value);
-	},
-	email: function(value) {
-		let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	number: (value) => /^\d+$/.test(value),
+	string: (value) => /^[A-Za-z ]+$/.test(value),
+	required: (value) => Boolean(value.trim().length),
+	minlength: (value, param) => (value.trim().length >= param),
+	maxlength: (value, param) => (value.trim().length <= param),
+	email: (value) => {
+		const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     	return re.test(value);
-	},
-	minlength: function(value, param) {
-		return (value.trim().length >= param);
-	},
-	maxlength: function(value, param) {
-		return (value.trim().length <= param);
 	}
 }
 
